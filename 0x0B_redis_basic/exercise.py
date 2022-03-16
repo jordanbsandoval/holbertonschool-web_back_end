@@ -7,6 +7,8 @@ import redis
 import uuid
 import sys
 from functools import wraps
+
+
 def replay(fn):
     """ display the history of calls of a particular function """
     store = redis.Redis()
@@ -26,17 +28,21 @@ def replay(fn):
 def count_calls(method: Callable) -> Callable:
     """ Calls counter decorator """
     key = method.__qualname__
+
     @wraps(method)
     def wrapper(self, *args, **kwargs):
         """ Method wrapper to incr count """
         self._redis.incr(key)
         return method(self, *args, **kwargs)
     return wrapper
+
+
 def call_history(method: Callable) -> Callable:
     """ Calls call history decorator """
     key = method.__qualname__
     input_key = key + ":inputs"
     output_key = key + ":outputs"
+
     @wraps(method)
     def wrapper(self, *args, **kwargs):
         """ Method wrapper to push history in store """
@@ -45,12 +51,15 @@ def call_history(method: Callable) -> Callable:
         self._redis.rpush(output_key, str(data))
         return data
     return wrapper
+
+
 class Cache:
     """ Redis cache class """
     def __init__(self):
         """ Constructor """
         self._redis = redis.Redis()
         self._redis.flushdb()
+
     @call_history
     @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:

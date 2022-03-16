@@ -1,33 +1,46 @@
 #!/usr/bin/env python3
-""" Writing strings to Redis  """
+"""
+Exercise file
+"""
 from typing import Callable, Optional, Union
 import redis
 import uuid
+import sys
+from functools import wraps
+
+
+def count_calls(method: Callable) -> Callable:
+    """ Calls counter decorator """
+    key = method.__qualname__
+
+    @wraps(method)
+    def wrapper(self, *args, **kwargs):
+        """ Method wrapper to incr count """
+        self._redis.incr(key)
+        return(self, args, kwargs)
+    return wrapper
 
 
 class Cache:
-    """ Cache class """
+    """ Redis cache class """
     def __init__(self):
-        """ constructor """
+        """ Constructor """
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
-        """ Generates a random key """
-        id = str(uuid.uuid4())
-        self._redis.set(id, data)
-        return id
-
-    def get_str(self, key):
-        """  parametrize Cache.get with the correct conversion function """
-        return self.get(key, str)
-
-    def get_int(self, key):
-        """  parametrize Cache.get with the correct conversion function """
-        return self.get(key, int)
-
-    def get(self, key: str, fn: Optional[Callable] = None):
-        """ convert the data back to the desired format """
-        val = self._redis.get(key)
-        return val if not fn else fn(val)
-
+        """ Constructor """
+        random_id = str(uuid.uuid4())
+        self._redis.set(random_id, data)
+        return random_id
+    def get(self, key: str,
+            fn: Optional[Callable] = None) -> Union[str, bytes, int, float]:
+        """ Get originaltype data """
+        return fn(self._redis.get(key)) if fn else self._redis.get(key)
+    def get_str(self, value: bytes) -> str:
+        """ Converts bytes to string """
+        return value.decode("utf-8")
+    def get_int(self, value: bytes) -> str:
+        """ Converts bytes to integer """
+        return int.from_bytes(value, sys.byteorder)

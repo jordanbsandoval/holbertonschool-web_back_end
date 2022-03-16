@@ -4,12 +4,14 @@ from typing import Callable, Optional, Union
 import redis
 import uuid
 
+
 class Cache:
     """ Cache class """
     def __init__(self):
         """ constructor """
         self._redis = redis.Redis()
         self._redis.flushdb()
+
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """ Generates a random key """
         id = str(uuid.uuid4())

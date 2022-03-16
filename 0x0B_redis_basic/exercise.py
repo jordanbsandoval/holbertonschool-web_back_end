@@ -7,15 +7,19 @@ import redis
 import uuid
 import sys
 from functools import wraps
+
+
 def count_calls(method: Callable) -> Callable:
     """ Calls counter decorator """
     key = method.__qualname__
+
     @wraps(method)
     def wrapper(self, *args, **kwargs):
         """ Method wrapper to incr count """
         self._redis.incr(key)
         return method(self, *args, **kwargs)
     return wrapper
+
 
 def call_history(method: Callable) -> Callable:
     """ Calls call history decorator """

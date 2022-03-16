@@ -26,7 +26,7 @@ class Cache:
         """  parametrize Cache.get with the correct conversion function """
         return self.get(key, int)
 
-    def get(self, key: str, fn: Optional[Callable]):
+    def get(self, key: str, fn: Optional[Callable] = None):
         """ convert the data back to the desired format """
         val = self._redis.get(key)
         return val if not fn else fn(val)

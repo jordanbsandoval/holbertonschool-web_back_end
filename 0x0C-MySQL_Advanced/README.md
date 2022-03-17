@@ -15,3 +15,11 @@ For this project, students are expected to look at this concept:
   * [CREATE PROCEDURE and CREATE FUNCTION Statements](https://dev.mysql.com/doc/refman/5.7/en/create-procedure.html)
   * [CREATE INDEX Statement](https://dev.mysql.com/doc/refman/5.7/en/create-index.html)
   * [CREATE VIEW Statement](https://dev.mysql.com/doc/refman/5.7/en/create-view.html)
+
+## General
+- How to create tables with constraints
+- How to optimize queries by adding indexes
+- What is and how to implement stored procedures and functions in MySQL
+- What is and how to implement views in MySQL
+- What is and how to implement triggers in MySQL
+
